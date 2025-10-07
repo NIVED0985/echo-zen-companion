@@ -58,48 +58,56 @@ const Home = () => {
       title: "AI Companion",
       description: "Chat with your empathetic AI friend",
       gradient: "from-purple-500 to-pink-500",
+      path: "/ai-companion",
     },
     {
       icon: Mic,
       title: "Voice Journal",
       description: "Record your daily thoughts and feelings",
       gradient: "from-blue-500 to-cyan-500",
+      path: "/voice-journal",
     },
     {
       icon: CheckSquare,
       title: "To-Do List",
       description: "Organize your tasks mindfully",
       gradient: "from-green-500 to-emerald-500",
+      path: "/todo-list",
     },
     {
       icon: Users,
       title: "Chat Room",
       description: "Connect with supportive community",
       gradient: "from-yellow-500 to-orange-500",
+      path: "/chat-room",
     },
     {
       icon: Phone,
       title: "Emergency SOS",
       description: "Quick access to crisis support",
       gradient: "from-red-500 to-rose-500",
+      path: "/emergency-sos",
     },
     {
       icon: Heart,
       title: "Mood Tracker",
       description: "Monitor your emotional well-being",
       gradient: "from-pink-500 to-rose-500",
+      path: "/mood-tracker",
     },
     {
       icon: Target,
       title: "Habit Tracker",
       description: "Build positive daily routines",
       gradient: "from-indigo-500 to-purple-500",
+      path: "/habit-tracker",
     },
     {
       icon: Wind,
       title: "Breathing Exercises",
       description: "Calm your mind with guided breathwork",
       gradient: "from-teal-500 to-cyan-500",
+      path: "/breathing-exercises",
     },
   ];
 
@@ -165,10 +173,11 @@ const Home = () => {
           {features.map((feature, index) => (
             <div
               key={feature.title}
+              onClick={() => navigate(feature.path)}
               className="glass-effect rounded-2xl p-6 hover:scale-105 transition-all duration-300 cursor-pointer animate-slide-up group"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 animate-glow`}>
                 <feature.icon className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
