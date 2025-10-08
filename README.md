@@ -69,7 +69,7 @@ Echo Zen Companion is an AI-driven mental health companion that provides empathe
 ---
 
 ## 📹 Demonstration Video
-▶️ [YouTube / Google Drive Link](#)
+▶️ https://drive.google.com/file/d/10-k7JAChSnVSISgcUZPiXaddgTPUyUgu/view?usp=drive_link
 
 ---
 
