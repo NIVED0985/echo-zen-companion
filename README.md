@@ -91,8 +91,8 @@ Echo Zen Companion is an AI-driven mental health companion that provides empathe
 
 ## 🖼️ Assets / Screenshots
 <p align="center">
-  <img src="assets/project_logo.png" alt="Application Screenshot" width="220" /><br/>
-  <img src="assets/screenshot1.png" alt="Application Screenshot" width="600" />
+  <img src="Assets/PROJECT1.PNG" alt="Application Screenshot" width="220" /><br/>
+  <img src="Assets/PROJECT2.png" alt="Application Screenshot" width="600" />
 </p>
 
 ---
