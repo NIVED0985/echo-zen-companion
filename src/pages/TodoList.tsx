@@ -2,99 +2,38 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckSquare, Plus, Trash2 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 const TodoList = () => {
   const [newTask, setNewTask] = useState("");
-  const [priority, setPriority] = useState("medium");
-  const [tasks, setTasks] = useState<any[]>([]);
-  const { toast } = useToast();
+  const [tasks, setTasks] = useState([
+    { id: 1, text: "Morning meditation", completed: true },
+    { id: 2, text: "Journal entry", completed: false },
+    { id: 3, text: "Evening walk", completed: false },
+  ]);
 
-  useEffect(() => {
-    loadTasks();
-  }, []);
-
-  const loadTasks = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { data, error } = await supabase
-      .from('tasks')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setTasks(data);
-    }
-  };
-
-  const addTask = async () => {
+  const addTask = () => {
     if (!newTask.trim()) return;
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { error } = await supabase.from('tasks').insert({
-      user_id: user.id,
-      title: newTask,
-      priority,
-      completed: false,
-    });
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to add task",
-        variant: "destructive",
-      });
-    } else {
-      setNewTask("");
-      setPriority("medium");
-      loadTasks();
-    }
+    setTasks([...tasks, { id: Date.now(), text: newTask, completed: false }]);
+    setNewTask("");
   };
 
-  const toggleTask = async (id: string, completed: boolean) => {
-    const { error } = await supabase
-      .from('tasks')
-      .update({ completed: !completed })
-      .eq('id', id);
-
-    if (!error) {
-      loadTasks();
-    }
+  const toggleTask = (id: number) => {
+    setTasks(tasks.map(task => 
+      task.id === id ? { ...task, completed: !task.completed } : task
+    ));
   };
 
-  const deleteTask = async (id: string) => {
-    const { error } = await supabase.from('tasks').delete().eq('id', id);
-
-    if (!error) {
-      toast({
-        title: "Deleted",
-        description: "Task removed",
-      });
-      loadTasks();
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'text-red-500';
-      case 'medium': return 'text-yellow-500';
-      case 'low': return 'text-green-500';
-      default: return 'text-muted-foreground';
-    }
+  const deleteTask = (id: number) => {
+    setTasks(tasks.filter(task => task.id !== id));
   };
 
   return (
     <Layout>
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
+          {/* Header */}
           <div className="text-center mb-12 animate-slide-up">
             <div className="inline-flex items-center gap-3 mb-4">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center animate-glow">
@@ -109,6 +48,7 @@ const TodoList = () => {
             </p>
           </div>
 
+          {/* Add Task */}
           <div className="glass-effect rounded-3xl p-6 shadow-2xl mb-8 animate-slide-in">
             <div className="flex gap-2">
               <Input
@@ -118,16 +58,6 @@ const TodoList = () => {
                 onKeyDown={(e) => e.key === 'Enter' && addTask()}
                 className="transition-all duration-300 focus:scale-[1.01]"
               />
-              <Select value={priority} onValueChange={setPriority}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                </SelectContent>
-              </Select>
               <Button
                 onClick={addTask}
                 className="bg-gradient-to-r from-green-500 to-emerald-500 hover:opacity-90 transition-all duration-300 hover:scale-110 animate-glow"
@@ -137,6 +67,7 @@ const TodoList = () => {
             </div>
           </div>
 
+          {/* Tasks */}
           <div className="space-y-3">
             {tasks.map((task, index) => (
               <div
@@ -146,7 +77,7 @@ const TodoList = () => {
               >
                 <Checkbox
                   checked={task.completed}
-                  onCheckedChange={() => toggleTask(task.id, task.completed)}
+                  onCheckedChange={() => toggleTask(task.id)}
                   className="transition-all duration-300 hover:scale-110"
                 />
                 <span
@@ -154,10 +85,7 @@ const TodoList = () => {
                     task.completed ? 'line-through text-muted-foreground' : ''
                   }`}
                 >
-                  {task.title}
-                </span>
-                <span className={`text-xs font-semibold uppercase ${getPriorityColor(task.priority)}`}>
-                  {task.priority}
+                  {task.text}
                 </span>
                 <Button
                   variant="ghost"
@@ -171,6 +99,7 @@ const TodoList = () => {
             ))}
           </div>
 
+          {/* Stats */}
           <div className="grid grid-cols-2 gap-4 mt-8">
             <div className="glass-effect rounded-2xl p-6 text-center transition-all duration-300 hover:scale-105 animate-slide-up" style={{ animationDelay: '0.3s' }}>
               <p className="text-3xl font-bold text-primary animate-breathe">

@@ -2,112 +2,27 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Users, Send } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 const ChatRoom = () => {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<any[]>([]);
-  const [username, setUsername] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
+  const [messages, setMessages] = useState([
+    { id: 1, user: "Alex", text: "Welcome to the community! 🌟", time: "2m ago" },
+    { id: 2, user: "Sam", text: "Having a peaceful evening here", time: "5m ago" },
+    { id: 3, user: "Jordan", text: "Remember to take deep breaths everyone 🌸", time: "8m ago" },
+  ]);
 
-  useEffect(() => {
-    loadMessages();
-    loadProfile();
-    
-    const channel = supabase
-      .channel('chat-messages')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'chat_messages'
-        },
-        (payload) => {
-          setMessages(prev => [...prev, payload.new]);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const loadProfile = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { data } = await supabase
-      .from('profiles')
-      .select('display_name')
-      .eq('id', user.id)
-      .single();
-
-    if (data) {
-      setUsername(data.display_name || user.email?.split('@')[0] || 'Anonymous');
-    }
-  };
-
-  const loadMessages = async () => {
-    const { data, error } = await supabase
-      .from('chat_messages')
-      .select('*')
-      .order('created_at', { ascending: true })
-      .limit(50);
-
-    if (!error && data) {
-      setMessages(data);
-    }
-  };
-
-  const sendMessage = async () => {
+  const sendMessage = () => {
     if (!message.trim()) return;
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { error } = await supabase.from('chat_messages').insert({
-      user_id: user.id,
-      username: username || user.email?.split('@')[0] || 'Anonymous',
-      message: message,
-    });
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to send message",
-        variant: "destructive",
-      });
-    } else {
-      setMessage("");
-    }
-  };
-
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    
-    if (diffMins < 1) return "Just now";
-    if (diffMins < 60) return `${diffMins}m ago`;
-    const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `${diffHours}h ago`;
-    return date.toLocaleDateString();
+    setMessages([...messages, { id: Date.now(), user: "You", text: message, time: "Just now" }]);
+    setMessage("");
   };
 
   return (
     <Layout>
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
+          {/* Header */}
           <div className="text-center mb-12 animate-slide-up">
             <div className="inline-flex items-center gap-3 mb-4">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center animate-glow">
@@ -122,29 +37,32 @@ const ChatRoom = () => {
             </p>
           </div>
 
+          {/* Chat Container */}
           <div className="glass-effect rounded-3xl p-6 shadow-2xl animate-slide-in">
+            {/* Active Users */}
             <div className="flex items-center gap-2 mb-4 pb-4 border-b border-border/50 animate-fade-in">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-breathe" />
-              <p className="text-sm text-muted-foreground">Chat room active</p>
+              <p className="text-sm text-muted-foreground">12 members online</p>
             </div>
 
+            {/* Messages */}
             <div className="space-y-4 mb-6 max-h-[500px] overflow-y-auto">
               {messages.map((msg, index) => (
                 <div
                   key={msg.id}
                   className="glass-effect rounded-2xl p-4 transition-all duration-300 hover:scale-[1.02] animate-slide-up"
-                  style={{ animationDelay: `${index * 0.05}s` }}
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <p className="font-semibold text-primary">{msg.username}</p>
-                    <p className="text-xs text-muted-foreground">{formatTime(msg.created_at)}</p>
+                    <p className="font-semibold text-primary">{msg.user}</p>
+                    <p className="text-xs text-muted-foreground">{msg.time}</p>
                   </div>
-                  <p>{msg.message}</p>
+                  <p>{msg.text}</p>
                 </div>
               ))}
-              <div ref={messagesEndRef} />
             </div>
 
+            {/* Input */}
             <div className="flex gap-2 animate-slide-up" style={{ animationDelay: '0.3s' }}>
               <Input
                 placeholder="Share something positive..."
@@ -162,6 +80,7 @@ const ChatRoom = () => {
             </div>
           </div>
 
+          {/* Guidelines */}
           <div className="mt-8 glass-effect rounded-2xl p-6 animate-fade-in">
             <h3 className="font-semibold mb-3">Community Guidelines</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
