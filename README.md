@@ -1,36 +1,102 @@
-# 🌿 Echo Zen Companion
-
-A beautiful, gamified **mental wellness platform** with AI-powered support, mindfulness tools, and Supabase integration — built using **React**, **TypeScript**, **Vite**, and **Tailwind CSS**.  
-Designed with a clean, calm, and modern aesthetic to promote focus and emotional balance.
-
-![Status](https://img.shields.io/badge/Status-Active-success)
-![License](https://img.shields.io/badge/License-MIT-blue)
+<!-- AIGNITE Banner (centered) -->
+<div align="center">
+  <h1> AIGNITE 2K25</h1>
+  <p><strong>Powered by MLSC</strong></p>
+</div>
 
 ---
 
-## ✨ Features
-
-- **🤖 AI Wellness Assistant** – Chat with an empathetic AI for mindfulness and reflection  
-- **🧘 Guided Meditations** – Access curated mindfulness exercises and breathing sessions  
-- **📝 Daily Reflections** – Track emotions and thoughts over time  
-- **✅ Habit Builder** – Set and maintain healthy habits with visual progress  
-- **🔐 Supabase Auth** – Secure authentication and user data storage  
-- **💾 Cloud Sync** – Store user progress and reflections in Supabase  
-- **🎨 Minimal UI** – Calm, dark-themed, glassmorphic design  
+<p align="center">
+  <strong>ECHO</strong><br/>
+  <em>meet your innerself</em>
+</p>
 
 ---
 
-## 🚀 Quick Start
+## 📖 Project Description
+📖 Project Description
 
-### Prerequisites
+**✨ Problem Statement:**
+Mental health support is often inaccessible, stigmatized, or lacks personalization. Many individuals struggle to find timely guidance, safe spaces to express emotions, or effective tools to track and improve their well-being.
 
-- Node.js 18+  
-- npm or Bun installed  
-- Supabase project with API keys
+**💡 Proposed Solution:**
+Echo Zen Companion is an AI-driven mental health companion that provides empathetic conversations, guided mindfulness exercises, and mood tracking tools. It personalizes support based on user inputs and behavior, helping individuals manage stress, anxiety, and emotional well-being more effectively.
 
-### Installation
+**🎯 Target Users / Use Cases:**
+• Students facing academic pressure who need emotional support.
+• Working professionals dealing with stress or burnout.
+• Individuals seeking daily mindfulness, journaling, and AI-powered wellness check-ins.
+• Anyone who wants an accessible, stigma-free mental health tool.
+---
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/echo-zen-companion.git
-   cd echo-zen-companion
+## 🔬 Methodology
+
+**1.Research & Ideation** – Studied mental health challenges and existing solutions; identified gaps in accessibility and personalization.
+
+**2.Design** – Built wireframes, UI flows, and system architecture focusing on simplicity and empathy.
+
+**3.Develop** – Implemented features like AI chatbot, mood tracker, mindfulness modules, and personalized recommendations.
+
+**4.Test** – Conducted usability tests, iterated based on feedback, and refined chatbot responses.
+
+**5.Deploy** – Hosted the platform for live demo and collected engagement metrics.
+
+**6.Future Scope** – Expand with multi-language support, deeper analytics, integration with wearables, and advanced mental health insights.
+---
+
+## 👥 Team Details
+**Team Name:** `ApexCoders`
+
+| Name | Role | Email |
+|---|---:|---|
+| Shaik Afreen | Team Lead | member1@example.com |
+| Nived P Pillai| Team Member | member2@example.com |
+| Abdul sami   | Team Member| member3@example.com |
+| Gowrav Vannan| Team Member | member4@example.com |
+
+
+---
+
+## 🛠️ Technology Stack  
+
+- **Frontend:** `React` – Modern UI with responsive and interactive design.  
+- **Backend:** `Node.js` – REST APIs for handling user requests and chatbot integration.  
+- **Database & Auth:** `Firebase` – Real-time database, authentication, and secure storage.  
+- **AI/ML Engine:** `Python` + `TensorFlow` – Powers the AI chatbot, sentiment analysis, and personalized recommendations.  
+- **Hosting/Deployment:** `Firebase Hosting` / `Vercel` (for frontend) + `Render` / `Heroku` (for backend).  
+
+
+---
+
+## 📹 Demonstration Video
+▶️ [YouTube / Google Drive Link](#)
+
+---
+
+## 🌐 Deployment
+🔗 [Live Demo Link](#)
+
+---
+
+## 📚 References  
+
+- [Firebase Documentation](https://firebase.google.com/docs) – For authentication, real-time database, and hosting setup.  
+- [React Official Docs](https://react.dev/) – For building the frontend UI components.  
+- [Node.js Documentation](https://nodejs.org/en/docs) – For backend server and API development.  
+- [TensorFlow Documentation](https://www.tensorflow.org/) – For AI/ML model development and integration.  
+- [MDN Web Docs](https://developer.mozilla.org/) – General reference for JavaScript, CSS, and web standards.  
+
+
+---
+
+## 🖼️ Assets / Screenshots
+<p align="center">
+  <img src="assets/project_logo.png" alt="Application Screenshot" width="220" /><br/>
+  <img src="assets/screenshot1.png" alt="Application Screenshot" width="600" />
+</p>
+
+---
+
+<p align="center">
+  <b>Hackathon:</b> AIGNITE 2K25 | Organized by MLSC<br/>
+</p>
