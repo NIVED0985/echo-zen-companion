@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import StreakBadge from "@/components/StreakBadge";
+import BadgesList from "@/components/BadgesList";
 import {
   MessageCircle,
   Mic,
@@ -76,10 +78,10 @@ const Home = () => {
     },
     {
       icon: Users,
-      title: "Chat Room",
+      title: "Chai Room",
       description: "Connect with supportive community",
       gradient: "from-yellow-500 to-orange-500",
-      path: "/chat-room",
+      path: "/chai-room",
     },
     {
       icon: Phone,
@@ -167,6 +169,10 @@ const Home = () => {
             Take a moment to breathe. Choose a path that speaks to you today.
           </p>
         </div>
+
+        {/* Gamification Section */}
+        <StreakBadge />
+        <BadgesList />
 
         {/* Feature Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">

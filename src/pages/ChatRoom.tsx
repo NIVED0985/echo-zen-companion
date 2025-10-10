@@ -30,10 +30,10 @@ const ChatRoom = () => {
               </div>
             </div>
             <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">
-              Community Chat
+              Chai Room ☕
             </h1>
             <p className="text-lg text-muted-foreground">
-              Connect with others on their wellness journey
+              Connect with others on their wellness journey over virtual chai
             </p>
           </div>
 

@@ -35,7 +35,8 @@ const App = () => (
           <Route path="/ai-companion" element={<AICompanion />} />
           <Route path="/voice-journal" element={<VoiceJournal />} />
           <Route path="/todo-list" element={<TodoList />} />
-          <Route path="/chat-room" element={<ChatRoom />} />
+          <Route path="/chai-room" element={<ChatRoom />} />
+          <Route path="/chat-room" element={<ChatRoom />} /> {/* Keep old route for compatibility */}
           <Route path="/emergency-sos" element={<EmergencySOS />} />
           <Route path="/mood-tracker" element={<MoodTracker />} />
           <Route path="/habit-tracker" element={<HabitTracker />} />
