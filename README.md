@@ -50,7 +50,7 @@ Echo Zen Companion is an AI-driven mental health companion that provides empathe
 ---
 
 ## 👥 Team Details
-**Team Name:** `ApexCoders`
+**Team Name:** `CodeCrafters`
 
 | Name | Role | Email |
 |---|---:|---|
