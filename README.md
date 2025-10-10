@@ -22,10 +22,14 @@ Mental health support is often inaccessible, stigmatized, or lacks personalizati
 **💡 Proposed Solution:**
 Echo Zen Companion is an AI-driven mental health companion that provides empathetic conversations, guided mindfulness exercises, and mood tracking tools. It personalizes support based on user inputs and behavior, helping individuals manage stress, anxiety, and emotional well-being more effectively.
 
-**🎯 Target Users / Use Cases:**
+**🎯 Target Users / Use Cases:** 
+
 • Students facing academic pressure who need emotional support.
+
 • Working professionals dealing with stress or burnout.
+
 • Individuals seeking daily mindfulness, journaling, and AI-powered wellness check-ins.
+
 • Anyone who wants an accessible, stigma-free mental health tool.
 ---
 
