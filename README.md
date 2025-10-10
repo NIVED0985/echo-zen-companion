@@ -49,10 +49,10 @@ Echo Zen Companion is an AI-driven mental health companion that provides empathe
 
 | Name | Role | Email |
 |---|---:|---|
-| Shaik Afreen | Team Lead | skafreen.021@gmail.com |
-| Nived P Pillai| Team Member | npravpillai@gmail.com |
-| Abdul sami   | Team Member| abdulsami2603nov@gmail.com |
-| Gowrav Vannan| Team Member | gowravvanan15@gmail.com |
+| Shaik Afreen | Team Lead | 2511cs020694@mallareddyuniversity.ac.in |
+| Nived P Pillai| Team Member | 2511cs020671@mallareddyuniversity.ac.in |
+| Abdul sami   | Team Member| 2511cs020676@mallareddyuniversity.ac.in |
+| Gowrav Vannan| Team Member | 2511cs020657@mallareddyuniversity.ac.in |
 
 
 ---
