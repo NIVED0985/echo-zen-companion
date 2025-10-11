@@ -177,6 +177,7 @@ export type Database = {
       }
       journal_entries: {
         Row: {
+          audio_url: string | null
           content: string
           created_at: string | null
           id: string
@@ -185,6 +186,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          audio_url?: string | null
           content: string
           created_at?: string | null
           id?: string
@@ -193,6 +195,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          audio_url?: string | null
           content?: string
           created_at?: string | null
           id?: string

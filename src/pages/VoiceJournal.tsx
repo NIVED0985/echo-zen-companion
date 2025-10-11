@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic, Square, Trash } from "lucide-react";
+import { Mic, Square, Trash, Play, Pause } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -13,14 +13,20 @@ const VoiceJournal = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [entries, setEntries] = useState<any[]>([]);
   const [recordingTime, setRecordingTime] = useState(0);
+  const [playingId, setPlayingId] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     fetchEntries();
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
     };
   }, []);
 
@@ -109,6 +115,7 @@ const VoiceJournal = () => {
         user_id: session.user.id,
         title: `Voice Entry - ${format(new Date(), "MMM dd, yyyy")}`,
         content: `Voice recording (${duration})`,
+        audio_url: base64Audio,
       });
 
       if (error) {
@@ -120,7 +127,6 @@ const VoiceJournal = () => {
         return;
       }
 
-      // Update streak and check badges
       await updateUserStreak(session.user.id);
 
       toast({
@@ -159,6 +165,31 @@ const VoiceJournal = () => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const togglePlay = (entry: any) => {
+    if (!entry.audio_url) {
+      toast({
+        title: "No Audio",
+        description: "This entry doesn't have an audio recording",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (playingId === entry.id) {
+      audioRef.current?.pause();
+      setPlayingId(null);
+    } else {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      
+      audioRef.current = new Audio(entry.audio_url);
+      audioRef.current.onended = () => setPlayingId(null);
+      audioRef.current.play();
+      setPlayingId(entry.id);
+    }
   };
 
   return (
@@ -236,14 +267,30 @@ const VoiceJournal = () => {
                       </p>
                       <p className="text-sm text-muted-foreground mt-2">{entry.content}</p>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => deleteEntry(entry.id)}
-                      className="rounded-full transition-all duration-300 hover:scale-110 hover:text-destructive"
-                    >
-                      <Trash className="w-5 h-5" />
-                    </Button>
+                    <div className="flex gap-2">
+                      {entry.audio_url && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => togglePlay(entry)}
+                          className="rounded-full transition-all duration-300 hover:scale-110 hover:text-primary"
+                        >
+                          {playingId === entry.id ? (
+                            <Pause className="w-5 h-5" />
+                          ) : (
+                            <Play className="w-5 h-5" />
+                          )}
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => deleteEntry(entry.id)}
+                        className="rounded-full transition-all duration-300 hover:scale-110 hover:text-destructive"
+                      >
+                        <Trash className="w-5 h-5" />
+                      </Button>
+                    </div>
                   </div>
                 </Card>
               ))
