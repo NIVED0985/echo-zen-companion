@@ -3,26 +3,52 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { MessageCircle, Send, Sparkles } from "lucide-react";
 import { useState } from "react";
+import { streamChat } from "@/utils/streamChat";
+import { useToast } from "@/hooks/use-toast";
 
 const AICompanion = () => {
+  const { toast } = useToast();
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([
+  const [messages, setMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([
     { role: "assistant", content: "Hello! I'm here to listen and support you. How are you feeling today?" }
   ]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSend = () => {
-    if (!message.trim()) return;
+  const handleSend = async () => {
+    if (!message.trim() || isLoading) return;
     
-    setMessages([...messages, { role: "user", content: message }]);
+    const userMsg = { role: "user" as const, content: message };
+    setMessages(prev => [...prev, userMsg]);
     setMessage("");
-    
-    // Simulate AI response
-    setTimeout(() => {
-      setMessages(prev => [...prev, { 
-        role: "assistant", 
-        content: "Thank you for sharing. I'm here to support you through this journey. Would you like to tell me more?" 
-      }]);
-    }, 1000);
+    setIsLoading(true);
+
+    let assistantContent = "";
+    const upsertAssistant = (chunk: string) => {
+      assistantContent += chunk;
+      setMessages(prev => {
+        const last = prev[prev.length - 1];
+        if (last?.role === "assistant") {
+          return prev.map((m, i) => (i === prev.length - 1 ? { ...m, content: assistantContent } : m));
+        }
+        return [...prev, { role: "assistant", content: assistantContent }];
+      });
+    };
+
+    try {
+      await streamChat({
+        messages: [...messages, userMsg],
+        onDelta: (chunk) => upsertAssistant(chunk),
+        onDone: () => setIsLoading(false),
+      });
+    } catch (e) {
+      console.error(e);
+      setIsLoading(false);
+      toast({
+        title: "Error",
+        description: "Failed to get response from AI. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -80,7 +106,8 @@ const AICompanion = () => {
               />
               <Button
                 onClick={handleSend}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 transition-all duration-300 hover:scale-110 animate-glow"
+                disabled={isLoading}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 transition-all duration-300 hover:scale-110 animate-glow disabled:opacity-50"
               >
                 <Send className="w-5 h-5" />
               </Button>
