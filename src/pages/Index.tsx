@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,10 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
 
   const backgrounds = [bgOcean, bgGradient, bgZen, bgAurora];
+  
+  const plugin = useRef(
+    Autoplay({ delay: 6000, stopOnInteraction: false })
+  );
 
   useEffect(() => {
     const checkUser = async () => {
@@ -108,18 +112,14 @@ const Index = () => {
       <div className="fixed inset-0 z-0">
         <Carousel
           opts={{ loop: true }}
-          plugins={[
-            Autoplay({
-              delay: 6000,
-            }),
-          ]}
+          plugins={[plugin.current]}
           className="w-full h-full"
         >
           <CarouselContent className="h-screen">
             {backgrounds.map((bg, index) => (
               <CarouselItem key={index} className="h-screen">
                 <div 
-                  className="h-full w-full bg-cover bg-center transition-all duration-1000 animate-fade-in"
+                  className="h-full w-full bg-cover bg-center transition-all duration-1000"
                   style={{ backgroundImage: `url(${bg})` }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/90 backdrop-blur-[2px]" />
