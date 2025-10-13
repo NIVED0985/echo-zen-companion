@@ -1,7 +1,8 @@
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic, Square, Trash, Play, Pause } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Mic, Square, Trash, Play, Pause, FileText } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +15,7 @@ const VoiceJournal = () => {
   const [entries, setEntries] = useState<any[]>([]);
   const [recordingTime, setRecordingTime] = useState(0);
   const [playingId, setPlayingId] = useState<string | null>(null);
+  const [transcribingId, setTranscribingId] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -192,6 +194,54 @@ const VoiceJournal = () => {
     }
   };
 
+  const transcribeAudio = async (entry: any) => {
+    if (!entry.audio_url) {
+      toast({
+        title: "No Audio",
+        description: "This entry doesn't have an audio recording",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setTranscribingId(entry.id);
+
+    try {
+      // Extract base64 audio from data URL
+      const base64Audio = entry.audio_url.split(',')[1];
+
+      const { data, error } = await supabase.functions.invoke('transcribe-audio', {
+        body: { audio: base64Audio }
+      });
+
+      if (error) throw error;
+
+      // Update the entry with transcribed text
+      const { error: updateError } = await supabase
+        .from('journal_entries')
+        .update({ content: data.text })
+        .eq('id', entry.id);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: "Transcription Complete! 📝",
+        description: "Your audio has been converted to text",
+      });
+
+      fetchEntries();
+    } catch (error) {
+      console.error('Transcription error:', error);
+      toast({
+        title: "Transcription Failed",
+        description: "Could not transcribe audio. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setTranscribingId(null);
+    }
+  };
+
   return (
     <Layout>
       <div className="container mx-auto px-4 py-12">
@@ -269,18 +319,29 @@ const VoiceJournal = () => {
                     </div>
                     <div className="flex gap-2">
                       {entry.audio_url && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => togglePlay(entry)}
-                          className="rounded-full transition-all duration-300 hover:scale-110 hover:text-primary"
-                        >
-                          {playingId === entry.id ? (
-                            <Pause className="w-5 h-5" />
-                          ) : (
-                            <Play className="w-5 h-5" />
-                          )}
-                        </Button>
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => togglePlay(entry)}
+                            className="rounded-full transition-all duration-300 hover:scale-110 hover:text-primary"
+                          >
+                            {playingId === entry.id ? (
+                              <Pause className="w-5 h-5" />
+                            ) : (
+                              <Play className="w-5 h-5" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => transcribeAudio(entry)}
+                            disabled={transcribingId === entry.id}
+                            className="rounded-full transition-all duration-300 hover:scale-110 hover:text-primary"
+                          >
+                            <FileText className="w-5 h-5" />
+                          </Button>
+                        </>
                       )}
                       <Button
                         variant="ghost"

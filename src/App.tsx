@@ -16,6 +16,7 @@ import EmergencySOS from "./pages/EmergencySOS";
 import MoodTracker from "./pages/MoodTracker";
 import HabitTracker from "./pages/HabitTracker";
 import BreathingExercises from "./pages/BreathingExercises";
+import Soundscapes from "./pages/Soundscapes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/mood-tracker" element={<MoodTracker />} />
           <Route path="/habit-tracker" element={<HabitTracker />} />
           <Route path="/breathing-exercises" element={<BreathingExercises />} />
+          <Route path="/soundscapes" element={<Soundscapes />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -116,6 +116,13 @@ const Home = () => {
       gradient: "from-teal-500 to-cyan-500",
       path: "/breathing-exercises",
     },
+    {
+      icon: Sparkles,
+      title: "Soundscapes",
+      description: "Ambient sounds and calming themes",
+      gradient: "from-violet-500 to-purple-500",
+      path: "/soundscapes",
+    },
   ];
 
   if (loading) {
