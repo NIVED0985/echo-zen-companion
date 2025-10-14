@@ -208,37 +208,72 @@ const VoiceJournal = () => {
     setTranscribingId(entry.id);
 
     try {
-      // Extract base64 audio from data URL
-      const base64Audio = entry.audio_url.split(',')[1];
+      // Check if browser supports Web Speech API
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      
+      if (!SpeechRecognition) {
+        throw new Error("Speech recognition not supported in this browser");
+      }
 
-      const { data, error } = await supabase.functions.invoke('transcribe-audio', {
-        body: { audio: base64Audio }
-      });
+      // Play the audio and use speech recognition
+      const audio = new Audio(entry.audio_url);
+      const recognition = new SpeechRecognition();
+      
+      recognition.continuous = true;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
 
-      if (error) throw error;
+      let transcribedText = '';
 
-      // Update the entry with transcribed text
-      const { error: updateError } = await supabase
-        .from('journal_entries')
-        .update({ content: data.text })
-        .eq('id', entry.id);
+      recognition.onresult = async (event: any) => {
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            transcribedText += event.results[i][0].transcript + ' ';
+          }
+        }
+      };
 
-      if (updateError) throw updateError;
+      recognition.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+      };
 
-      toast({
-        title: "Transcription Complete! 📝",
-        description: "Your audio has been converted to text",
-      });
+      // Start recognition when audio starts playing
+      audio.onplay = () => recognition.start();
+      
+      // Stop recognition when audio ends
+      audio.onended = async () => {
+        recognition.stop();
+        
+        if (transcribedText.trim()) {
+          // Update the entry with transcribed text
+          const { error: updateError } = await supabase
+            .from('journal_entries')
+            .update({ content: transcribedText.trim() })
+            .eq('id', entry.id);
 
-      fetchEntries();
+          if (updateError) throw updateError;
+
+          toast({
+            title: "Transcription Complete! 📝",
+            description: "Your audio has been converted to text",
+          });
+
+          fetchEntries();
+        } else {
+          throw new Error("No speech detected in the audio");
+        }
+        
+        setTranscribingId(null);
+      };
+
+      audio.play();
     } catch (error) {
       console.error('Transcription error:', error);
       toast({
         title: "Transcription Failed",
-        description: "Could not transcribe audio. Please try again.",
+        description: error instanceof Error ? error.message : "Could not transcribe audio. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setTranscribingId(null);
     }
   };
