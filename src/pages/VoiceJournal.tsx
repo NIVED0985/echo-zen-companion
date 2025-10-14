@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Mic, Square, Trash, Play, Pause, FileText } from "lucide-react";
+import { Mic, Square, Trash, Play, Pause, FileText, Volume2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -16,6 +16,7 @@ const VoiceJournal = () => {
   const [recordingTime, setRecordingTime] = useState(0);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [transcribingId, setTranscribingId] = useState<string | null>(null);
+  const [speakingId, setSpeakingId] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -242,6 +243,28 @@ const VoiceJournal = () => {
     }
   };
 
+  const speakText = (entry: any) => {
+    if (!entry.content || entry.content.includes('Voice recording')) {
+      toast({
+        title: "No Text",
+        description: "Transcribe the audio first to use text-to-speech",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (speakingId === entry.id) {
+      window.speechSynthesis.cancel();
+      setSpeakingId(null);
+    } else {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(entry.content);
+      utterance.onend = () => setSpeakingId(null);
+      window.speechSynthesis.speak(utterance);
+      setSpeakingId(entry.id);
+    }
+  };
+
   return (
     <Layout>
       <div className="container mx-auto px-4 py-12">
@@ -343,6 +366,14 @@ const VoiceJournal = () => {
                           </Button>
                         </>
                       )}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => speakText(entry)}
+                        className={`rounded-full transition-all duration-300 hover:scale-110 hover:text-primary ${speakingId === entry.id ? 'text-primary animate-pulse' : ''}`}
+                      >
+                        <Volume2 className="w-5 h-5" />
+                      </Button>
                       <Button
                         variant="ghost"
                         size="icon"

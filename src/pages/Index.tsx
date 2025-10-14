@@ -3,12 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
-import {
   MessageCircle,
   Mic,
   CheckSquare,
@@ -20,20 +14,11 @@ import {
   Sparkles,
   ArrowRight,
 } from "lucide-react";
-import bgOcean from "@/assets/bg-ocean.jpg";
-import bgGradient from "@/assets/bg-gradient.jpg";
-import bgZen from "@/assets/bg-zen.jpg";
 import bgAurora from "@/assets/bg-aurora.jpg";
 
 const Index = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-
-  const backgrounds = [bgOcean, bgGradient, bgZen, bgAurora];
-  
-  const plugin = useRef(
-    Autoplay({ delay: 6000, stopOnInteraction: false })
-  );
 
   useEffect(() => {
     const checkUser = async () => {
@@ -108,26 +93,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Animated Background Carousel */}
-      <div className="fixed inset-0 z-0">
-        <Carousel
-          opts={{ loop: true }}
-          plugins={[plugin.current]}
-          className="w-full h-full"
-        >
-          <CarouselContent className="h-screen">
-            {backgrounds.map((bg, index) => (
-              <CarouselItem key={index} className="h-screen">
-                <div 
-                  className="h-full w-full bg-cover bg-center transition-all duration-1000"
-                  style={{ backgroundImage: `url(${bg})` }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/90 backdrop-blur-[2px]" />
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+      {/* Aurora Background */}
+      <div 
+        className="fixed inset-0 z-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${bgAurora})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/90 backdrop-blur-[2px]" />
       </div>
 
       {/* Content Overlay */}
@@ -137,7 +108,7 @@ const Index = () => {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-3 mb-8 animate-slide-up">
               <Sparkles className="w-12 h-12 text-primary animate-float drop-shadow-glow" />
-              <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-glow drop-shadow-lg">
+              <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-glow">
                 Echo
               </h1>
             </div>
